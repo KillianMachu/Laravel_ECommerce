@@ -19,7 +19,7 @@ class ProductImageFactory extends Factory
     {
         return [
             'product_id' => Product::factory(),
-            'image_url' => $this->faker->imageUrl(640, 480, 'products', true),
+            'image_url' => 'https://picsum.photos/640/480?random=' . rand(1,100),
             'is_primary' => $this->faker->boolean(20),
             'position' => $this->faker->numberBetween(1, 10),
         ];

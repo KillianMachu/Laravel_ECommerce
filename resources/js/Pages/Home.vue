@@ -5,73 +5,113 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 
 <template>
     <AppLayout>
-        <Head title="Accueil" />
-
-        <!-- Hero Section -->
-        <div class="relative bg-gray-900 h-[600px]">
-            <div class="absolute inset-0">
-                <img 
-                    src="https://images.unsplash.com/photo-1441986300917-64674bd600d8" 
-                    class="w-full h-full object-cover opacity-50"
-                    alt="Hero background"
-                />
-            </div>
-            <div class="relative max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8">
-                <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
-                    Bienvenue chez [Nom du Commerce]
-                </h1>
-                <p class="mt-6 text-xl text-gray-300 max-w-3xl">
-                    Découvrez notre sélection exceptionnelle de produits et services
-                </p>
-                <div class="mt-10">
-                    <Link 
-                        href="/products" 
-                        class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                    >
-                        Découvrir nos produits
-                    </Link>
+        <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+            <!-- Hero Section -->
+            <section class="relative rounded-2xl overflow-hidden">
+                <div class="absolute inset-0">
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+                        class="w-full h-full object-cover" alt="Hero">
+                    <div class="absolute inset-0 bg-gradient-to-r from-indigo-600/90 to-indigo-600/70"></div>
                 </div>
-            </div>
-        </div>
+                <div class="relative py-24 px-8 sm:px-12 text-center">
+                    <h1 class="text-4xl sm:text-5xl font-bold text-white mb-6">Découvrez notre collection</h1>
+                    <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">Les meilleures marques aux meilleurs prix,
+                        livrées directement chez vous.</p>
+                    <button class="btn-primary text-lg px-8 py-3 bg-white text-indigo-600 hover:bg-gray-100">
+                        Voir les produits
+                    </button>
+                </div>
+            </section>
 
-        <!-- Features Section -->
-        <div class="py-16 bg-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    <!-- Feature 1 -->
-                    <div class="p-6 border rounded-lg">
-                        <div class="text-indigo-600 mb-4">
-                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
+            <!-- Catégories -->
+            <section>
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="section-title">Catégories Populaires</h2>
+                    <button class="text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+                        Voir tout
+                        <ChevronRightIcon class="w-4 h-4" />
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div v-for="category in categories" :key="category.id" class="card group cursor-pointer">
+                        <div class="aspect-w-16 aspect-h-9 w-full overflow-hidden rounded-t-lg">
+                            <img :src="category.image" :alt="category.name"
+                                class="h-full w-full object-cover object-center transform group-hover:scale-110 transition-transform duration-300">
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900">Qualité garantie</h3>
-                        <p class="mt-2 text-gray-500">Nous sélectionnons uniquement les meilleurs produits pour vous.</p>
-                    </div>
-
-                    <!-- Feature 2 -->
-                    <div class="p-6 border rounded-lg">
-                        <div class="text-indigo-600 mb-4">
-                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ category.name }}</h3>
+                            <p class="text-gray-500">{{ category.description }}</p>
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900">Livraison rapide</h3>
-                        <p class="mt-2 text-gray-500">Recevez votre commande en un temps record.</p>
-                    </div>
-
-                    <!-- Feature 3 -->
-                    <div class="p-6 border rounded-lg">
-                        <div class="text-indigo-600 mb-4">
-                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-medium text-gray-900">Service client</h3>
-                        <p class="mt-2 text-gray-500">Une équipe à votre écoute 7j/7.</p>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
+
+            <!-- Produits Populaires -->
+            <section>
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="section-title">Produits Populaires</h2>
+                    <button class="text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+                        Voir tout
+                        <ChevronRightIcon class="w-4 h-4" />
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div v-for="product in popularProducts" :key="product.id" class="card group cursor-pointer">
+                        <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-t-lg bg-gray-200">
+                            <img :src="product.image" :alt="product.name"
+                                class="h-full w-full object-cover object-center group-hover:scale-110 transition-transform duration-300">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
+                            <div class="flex items-center justify-between mt-2">
+                                <p class="text-xl font-bold text-indigo-600">{{ product.price }} €</p>
+                                <div class="flex items-center">
+                                    <span class="text-yellow-400">★</span>
+                                    <span class="ml-1 text-sm text-gray-500">{{ product.rating }}/5</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary w-full mt-4">
+                                Ajouter au panier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Avantages -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-8 py-12">
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Livraison Gratuite</h3>
+                    <p class="text-gray-500">Pour toute commande supérieure à 50€</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Support 24/7</h3>
+                    <p class="text-gray-500">Une équipe à votre écoute</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Retours Gratuits</h3>
+                    <p class="text-gray-500">Satisfait ou remboursé sous 30 jours</p>
+                </div>
+            </section>
+        </main>
+
     </AppLayout>
 </template>

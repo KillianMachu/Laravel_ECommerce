@@ -27,8 +27,8 @@ class Product extends Model
     protected function price(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => $value / 100,
-            set: fn (string $value) => $value * 100,
+            get: fn(string $value) => $value / 100,
+            set: fn(string $value) => $value * 100,
         );
     }
 
@@ -39,7 +39,7 @@ class Product extends Model
                 $product->slug = Str::slug($product->name);
             }
         });
-        
+
         static::deleting(function ($image) {
             if ($image->image_url) {
                 $path = str_replace('/storage/products', '', $image->image_url); // Nettoyer le chemin
@@ -68,7 +68,8 @@ class Product extends Model
     public function carts(): BelongsToMany
     {
         return $this->belongsToMany(Cart::class)
-            ->withPivot('quantity', 'total_price')
+            ->withPivot('quantity')
+            // ->withPivot('quantity', 'total_price')
             ->withTimestamps();
     }
 
@@ -76,4 +77,18 @@ class Product extends Model
     {
         return $this->belongsToMany(Order::class);
     }
+
+    public function primaryImage()
+    {
+        return $this->hasOne(ProductImage::class)->where('is_primary', true);
+    }
+
+    protected function primaryImageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->primaryImage()?->image_url ?? $this->images()->first()?->image_url,
+        );
+    }
+
+    protected $appends = ['primary_image_url']; // Important ! N'oubliez pas d'ajouter l'attribut ici
 }

@@ -13,6 +13,7 @@ class Category extends Model
 
     protected $fillable = [
         'name',
+        'description',
         'slug',
     ];
 
@@ -33,5 +34,10 @@ class Category extends Model
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class);
+    }
+
+    public function getProductsCountAttribute()
+    {
+        return $this->products()->where('is_active', true)->count();
     }
 }

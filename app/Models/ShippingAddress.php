@@ -11,9 +11,12 @@ class ShippingAddress extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
+        'recipient',
         'street',
         'postal_code',
         'city',
+        'phone',
     ];
 
     public function orders(): HasMany

@@ -13,34 +13,23 @@ class AddItemController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, Product $product)
     {
-        $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
+        $request->validate([
             'quantity' => 'required|integer|min:1'
         ]);
 
-        // Récupérer ou créer le panier pour l'utilisateur
-        $cart = Cart::firstOrCreate([
-            'user_id' => auth()->id(),
-            'status' => 'active'
-        ]);
+        $cart = $request->user()->customer->cart()->firstOrCreate();
 
-        // Vérifier si le produit existe déjà dans le panier
-        $cartItem = $cart->items()->where('product_id', $validated['product_id'])->first();
+        $cartProduct = $cart->products()->where('product_id', $product->id)->first();
 
-        if ($cartItem) {
-            // Mettre à jour la quantité si le produit existe déjà
-            $cartItem->update([
-                'quantity' => $cartItem->quantity + $validated['quantity']
+        if ($cartProduct) {
+            $cartProduct->pivot->update([
+                'quantity' => $cartProduct->pivot->quantity + $request->quantity
             ]);
         } else {
-            // Créer un nouvel item dans le panier
-            $product = Product::find($validated['product_id']);
-            $cart->items()->create([
-                'product_id' => $validated['product_id'],
-                'quantity' => $validated['quantity'],
-                'price' => $product->price
+            $cart->products()->attach($product->id,[
+                'quantity' => $request->quantity
             ]);
         }
 

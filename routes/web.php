@@ -1,7 +1,18 @@
 <?php
 
+use App\Http\Controllers\Address\CreateAddressController;
+use App\Http\Controllers\Address\DeleteAddressController;
+use App\Http\Controllers\Address\ListAddressesController;
+use App\Http\Controllers\Address\SetDefaultAddressController;
+use App\Http\Controllers\Address\UpdateAddressController;
 use App\Http\Controllers\Cart\AddItemController;
+use App\Http\Controllers\Cart\RemoveItemController;
+use App\Http\Controllers\Cart\ShowCartController;
+use App\Http\Controllers\Cart\UpdateItemController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Order\CreateOrderController;
+use App\Http\Controllers\Order\ListOrdersController;
+use App\Http\Controllers\Order\ShowOrderController;
 use App\Http\Controllers\ShowAllCategoryController;
 use App\Http\Controllers\ShowAllProductController;
 use App\Http\Controllers\ShowCategoryController;
@@ -35,10 +46,8 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/products/{product}', ShowProductController::class)->name('products.show');
 Route::get('/products', ShowAllProductController::class)->name('products');
 
-Route::get('/categories/{product}', ShowCategoryController::class)->name('categories.show');
+Route::get('/categories/{category}', ShowCategoryController::class)->name('categories.show');
 Route::get('/categories', ShowAllCategoryController::class)->name('categories');
-
-Route::post('/cart/add', AddItemController::class)->name('cart.add');
 
 Route::middleware([
     'auth:sanctum',
@@ -48,4 +57,19 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    Route::get('/cart', ShowCartController::class)->name('cart.show');
+    Route::post('/cart/products/{product}', AddItemController::class)->name('cart.add');
+    Route::put('/cart/products/{product}', UpdateItemController::class)->name('cart.update');
+    Route::delete('/cart/products/{product}', RemoveItemController::class)->name('cart.remove');
+
+    Route::get('/addresses', ListAddressesController::class)->name('addresses.show');
+    Route::post('/addresses', CreateAddressController::class)->name('addresses.create');
+    Route::put('/addresses/{address}', UpdateAddressController::class)->name('addresses.update');
+    Route::delete('/addresses/{address}', DeleteAddressController::class)->name('addresses.delete');
+    Route::post('/addresses/{address}/default', SetDefaultAddressController::class)->name('addresses.set-default');
+
+    Route::get('/orders', ListOrdersController::class)->name('orders.index');
+    Route::post('/orders', CreateOrderController::class)->name('orders.create');
+    Route::get('/orders/{order}', ShowOrderController::class)->name('orders.show');
 });

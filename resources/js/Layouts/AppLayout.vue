@@ -7,6 +7,7 @@ import Dropdown from "@/Components/Dropdown.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
+import { ShoppingCartIcon } from "@heroicons/vue/24/outline"
 
 defineProps({
     title: String,
@@ -79,6 +80,14 @@ const logout = () => {
 
                             <!-- Connecté -->
                             <template v-else>
+                                <Link :href="route('cart.show')" class="relative">
+                                    <!-- Votre icône de panier -->
+                                    <ShoppingCartIcon class="w-6 h-6" />
+                                    
+                                    <div v-if="$page.props.cartCount > 0" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                                    {{ $page.props.cartCount }}
+                                    </div>
+                                </Link>
                                 <div class="ms-3 relative">
                                     <Dropdown align="right" width="48">
                                         <template #trigger>
@@ -145,6 +154,12 @@ const logout = () => {
                                                 :href="route('profile.show')"
                                             >
                                                 Profil
+                                            </DropdownLink>
+
+                                            <DropdownLink
+                                                :href="route('addresses.show')"
+                                            >
+                                                Mes adresses
                                             </DropdownLink>
 
                                             <div

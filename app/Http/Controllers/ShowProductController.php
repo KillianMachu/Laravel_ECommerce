@@ -13,8 +13,12 @@ class ShowProductController extends Controller
      */
     public function __invoke(Request $request, Product $product)
     {
+        if (!$product->is_active) {
+            abort(404);
+        }
+
         return Inertia::render('Product/Show', [
-            'product' => $product,
+            'product' => $product->load('images'),
         ]);
     }
 }

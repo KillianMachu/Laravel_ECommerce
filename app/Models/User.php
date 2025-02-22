@@ -82,7 +82,7 @@ class User extends Authenticatable implements FilamentUser
         return $this->isAdmin();
     }
 
-    public function customer(): HasOne
+    public function customer()
     {
         return $this->hasOne(Customer::class);
     }

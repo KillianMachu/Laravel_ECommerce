@@ -23,7 +23,7 @@ class ProductFactory extends Factory
         
         return [
             'name' => $name,
-            'description' => $this->faker->sentence(),
+            'description' => $this->faker->paragraph(),
             'price' => $price,
             'discount_price' => $this->faker->boolean(50) ? round($price * (1 - $this->faker->numberBetween(10, 50) / 100), 2) : null,
             'stock' => $this->faker->numberBetween(0, 100),

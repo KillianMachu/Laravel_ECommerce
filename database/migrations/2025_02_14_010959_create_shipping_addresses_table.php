@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('shipping_addresses', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('recipient');
             $table->string('street');
             $table->string('postal_code');
             $table->string('city');
+            $table->string('phone');
             $table->timestamps();
         });
     }

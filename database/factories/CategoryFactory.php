@@ -21,6 +21,7 @@ class CategoryFactory extends Factory
 
         return [
             'name' => $name,
+            'description' => $this->faker->paragraph(),
             'slug' => Str::slug($name),
         ];
     }
