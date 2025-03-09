@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->comment('Category name');
             $table->text('description')->comment('Product description');
+            $table->string('image_url')->comment('Image URL');
             $table->string('slug')->unique()->comment('Category slug');
             $table->timestamps();
         });

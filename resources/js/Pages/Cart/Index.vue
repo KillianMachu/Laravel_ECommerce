@@ -54,6 +54,15 @@ const createOrder = () => {
 
 const selectedAddress = ref(props.addresses.find(address => address.is_default)?.id)
 
+const getTotalSavings = () => {
+    return props.cart.products.reduce((total, product) => {
+        if (product.discount_price) {
+            return total + ((product.price - product.discount_price) * product.pivot.quantity)
+        }
+        return total
+    }, 0)
+}
+
 </script>
 
 <template>
@@ -67,8 +76,12 @@ const selectedAddress = ref(props.addresses.find(address => address.is_default)?
                     <!-- Articles du panier -->
                     <div v-for="product in cart.products" :key="product.id" class="card p-6">
                         <div class="flex gap-6">
-                            <div class="w-24 h-24 flex-shrink-0">
-                                <img :src="product.primary_image_url" :alt="product.name"
+                            <div class="w-24 h-24 flex-shrink-0 relative">
+                                <div v-if="product.discount_price"
+                                    class="absolute -top-2 -left-2 bg-red-600 text-white px-2 py-1 rounded-md text-sm font-semibold z-10">
+                                    - {{ product.discount_percentage }} %
+                                </div>
+                                <img :src="'/storage/' + product.primary_image_url" :alt="product.name"
                                     class="w-full h-full object-cover rounded-lg">
                             </div>
                             <div class="flex-1">
@@ -82,8 +95,13 @@ const selectedAddress = ref(props.addresses.find(address => address.is_default)?
                                     </button>
                                 </div>
                                 <div class="mt-2 space-y-2">
-                                    <p class="text-gray-600">Prix unitaire: <span class="font-medium">{{
-                                        product.price }} €</span></p>
+                                    <div class="flex items-center gap-2">
+                                        <p class="font-bold text-indigo-600">Prix unitaire:</p>
+                                        <p class="font-bold text-indigo-600">{{ product.discount_price ?? product.price
+                                            }} €</p>
+                                        <p v-if="product.discount_price && product.discount_price > 0"
+                                            class="text-xs text-gray-500 line-through">{{ product.price }} €</p>
+                                    </div>
                                     <div class="flex items-center gap-2">
                                         <button
                                             @click="product.pivot.quantity > 1 ? updateQuantity(product.slug, product.pivot.quantity - 1) : null"
@@ -98,8 +116,13 @@ const selectedAddress = ref(props.addresses.find(address => address.is_default)?
                                             +
                                         </button>
                                     </div>
-                                    <p class="text-indigo-600 font-semibold">
-                                        Total: {{ product.pivot.total_price }} €
+                                    <p class="text-indigo-600 font-semibold text-lg">
+                                        Total: {{ product.pivot.quantity * (product.discount_price ?? product.price) }}
+                                        €
+                                    </p>
+                                    <p v-if="product.discount_price" class="text-sm text-green-600">
+                                        Économie: {{ ((product.price - product.discount_price) *
+                                        product.pivot.quantity).toFixed(2) }} €
                                     </p>
                                 </div>
                             </div>
@@ -122,10 +145,10 @@ const selectedAddress = ref(props.addresses.find(address => address.is_default)?
                                             :id="'address-' + address.id" name="delivery-address" class="mt-1">
                                         <div>
                                             <label :for="'address-' + address.id" class="font-medium">{{ address.name
-                                                }}</label>
+                                            }}</label>
                                             <p class="text-gray-600">{{ address.recipient }}</p>
                                             <p class="text-gray-600">{{ address.street }}</p>
-                                            <p class="text-gray-600">{{ address.postalCode }} {{ address.city }}</p>
+                                            <p class="text-gray-600">{{ address.postal_code }} {{ address.city }}</p>
                                             <p class="text-gray-600">{{ address.phone }}</p>
                                         </div>
                                     </div>
@@ -134,9 +157,9 @@ const selectedAddress = ref(props.addresses.find(address => address.is_default)?
                                     </span>
                                 </div>
                             </div>
-                            <button @click="showAddressModal = true" class="btn-primary w-full">
+                            <Link :href="route('addresses.show')" class="btn-primary w-full">
                                 Ajouter une nouvelle adresse
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -151,6 +174,10 @@ const selectedAddress = ref(props.addresses.find(address => address.is_default)?
                         <div class="flex justify-between">
                             <span>Livraison</span>
                             <span>0.00 €</span>
+                        </div>
+                        <div v-if="getTotalSavings() > 0" class="flex justify-between text-green-600 font-medium">
+                            <span>Économies totales</span>
+                            <span>-{{ getTotalSavings().toFixed(2) }} €</span>
                         </div>
                         <div class="border-t pt-4">
                             <div class="flex justify-between font-semibold">
@@ -178,9 +205,9 @@ const selectedAddress = ref(props.addresses.find(address => address.is_default)?
                 </div>
                 <h2 class="text-2xl font-semibold mb-4">Votre panier est vide</h2>
                 <p class="text-gray-500 mb-8">Découvrez nos produits et commencez vos achats</p>
-                <button class="btn-primary">
+                <Link :href="route('products.index')" class="btn-primary">
                     Voir les produits
-                </button>
+                </Link>
             </div>
         </main>
     </AppLayout>

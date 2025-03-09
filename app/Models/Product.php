@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -40,13 +41,19 @@ class Product extends Model
             }
         });
 
-        static::deleting(function ($image) {
-            if ($image->image_url) {
-                $path = str_replace('/storage/products', '', $image->image_url); // Nettoyer le chemin
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->delete($path);
+        static::deleting(function ($product) {
+            $product->carts()->detach();
+            $product->orders()->detach();
+
+            $product->images()->each(function ($image) {
+                if ($image->image_url) {
+                    $path = str_replace('/storage/', '', $image->image_url);
+                    if (Storage::disk('public')->exists($path)) {
+                        Storage::disk('public')->delete($path);
+                    }
                 }
-            }
+                $image->delete();
+            });
         });
     }
 
@@ -62,15 +69,12 @@ class Product extends Model
 
     public function images(): HasMany
     {
-        return $this->hasMany(ProductImage::class);
+        return $this->hasMany(ProductImage::class)->orderBy('position');
     }
 
     public function carts(): BelongsToMany
     {
-        return $this->belongsToMany(Cart::class)
-            ->withPivot('quantity')
-            // ->withPivot('quantity', 'total_price')
-            ->withTimestamps();
+        return $this->belongsToMany(Cart::class);
     }
 
     public function orders(): BelongsToMany
@@ -78,7 +82,7 @@ class Product extends Model
         return $this->belongsToMany(Order::class);
     }
 
-    public function primaryImage()
+    public function primaryImage(): HasOne
     {
         return $this->hasOne(ProductImage::class)->where('is_primary', true);
     }
@@ -90,5 +94,17 @@ class Product extends Model
         );
     }
 
-    protected $appends = ['primary_image_url']; // Important ! N'oubliez pas d'ajouter l'attribut ici
+    protected function discountPercentage(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (!$this->discount_price || $this->price == 0) {
+                    return null;
+                }
+                return round((($this->price - $this->discount_price) / $this->price) * 100);
+            }
+        );
+    }
+
+    protected $appends = ['primary_image_url', 'discount_percentage'];
 }

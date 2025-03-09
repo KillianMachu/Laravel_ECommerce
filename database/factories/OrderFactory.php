@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\OrderStatus;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ShippingAddress;
@@ -24,6 +25,7 @@ class OrderFactory extends Factory
         $randomStatus = $status[array_rand($status)]->value;
 
         return [
+            'customer_id' => Customer::factory(),
             'total_price' => $this->faker->numberBetween(100, 1000),
             'status' => $randomStatus,
             'shipping_address_id' => ShippingAddress::factory(),
@@ -33,7 +35,7 @@ class OrderFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function (Order $order) {
-            $products = Product::inRandomOrder()->take(3)->get();
+            $products = Product::inRandomOrder()->take(rand(1, 4))->get();
 
             $total = 0;
             foreach ($products as $product) {
@@ -42,7 +44,7 @@ class OrderFactory extends Factory
 
                 $order->products()->attach($product->id, [
                     'quantity' => $quantity,
-                    'total_price' => $price,
+                    'unitary_price' => $price,
                 ]);
                 $total += $price * $quantity;
             }

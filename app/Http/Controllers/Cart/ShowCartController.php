@@ -14,7 +14,6 @@ class ShowCartController extends Controller
      */
     public function __invoke(Request $request)
     {
-        // Récupérer le panier de l'utilisateur connecté avec ses produits
         $customer = $request->user()->customer;
         $cart = $customer->cart?->load('products');
         $addresses = $customer->addresses;

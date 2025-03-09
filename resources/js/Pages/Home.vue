@@ -1,6 +1,19 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { ChevronRightIcon, EyeIcon } from '@heroicons/vue/24/outline';
+
+const props = defineProps({
+    popularProducts: {
+        type: Array,
+        required: true
+    },
+    categories: {
+        type: Array,
+        required: true
+    }
+});
+
 </script>
 
 <template>
@@ -27,20 +40,29 @@ import AppLayout from '@/Layouts/AppLayout.vue';
             <section>
                 <div class="flex justify-between items-center mb-8">
                     <h2 class="section-title">Catégories Populaires</h2>
-                    <button class="text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
-                        Voir tout
-                        <ChevronRightIcon class="w-4 h-4" />
-                    </button>
+                    <Link :href="route('categories.index')"
+                        class="text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+                    Voir tout
+                    <ChevronRightIcon class="w-4 h-4" />
+                    </Link>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div v-for="category in categories" :key="category.id" class="card group cursor-pointer">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div v-for="category in categories" :key="category.id"
+                        class="flex flex-col card group cursor-pointer">
                         <div class="aspect-w-16 aspect-h-9 w-full overflow-hidden rounded-t-lg">
-                            <img :src="category.image" :alt="category.name"
+                            <img :src="'/storage/' + category.image_url" :alt="category.name"
                                 class="h-full w-full object-cover object-center transform group-hover:scale-110 transition-transform duration-300">
                         </div>
-                        <div class="p-6">
+                        <div class="flex flex-col flex-1 p-6">
                             <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ category.name }}</h3>
                             <p class="text-gray-500">{{ category.description }}</p>
+                            <div class="mt-auto">
+                                <Link :href="route('categories.show', category.slug)"
+                                    class="inline-flex justify-center gap-3 btn-primary w-full mt-4">
+                                    <EyeIcon class="w-6 h-6 text-white" />
+                                    Voir la catégorie
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -50,29 +72,34 @@ import AppLayout from '@/Layouts/AppLayout.vue';
             <section>
                 <div class="flex justify-between items-center mb-8">
                     <h2 class="section-title">Produits Populaires</h2>
-                    <button class="text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
-                        Voir tout
-                        <ChevronRightIcon class="w-4 h-4" />
-                    </button>
+                    <Link :href="route('products.index')"
+                        class="text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+                    Voir tout
+                    <ChevronRightIcon class="w-4 h-4" />
+                    </Link>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div v-for="product in popularProducts" :key="product.id" class="card group cursor-pointer">
-                        <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-t-lg bg-gray-200">
-                            <img :src="product.image" :alt="product.name"
-                                class="h-full w-full object-cover object-center group-hover:scale-110 transition-transform duration-300">
+                        <div class="relative">
+                            <div v-if="product.discount_price"
+                            class="absolute top-4 left-4 bg-red-600 text-white px-3 py-1.5 rounded-md text-lg font-semibold z-10">
+                                - {{ product.discount_percentage }} %
+                            </div>
+                            <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-t-lg bg-gray-200">
+                                <img :src="'/storage/' + product.primary_image_url" :alt="product.name"
+                                    class="h-full w-full object-cover object-center group-hover:scale-110 transition-transform duration-300">
+                            </div>
                         </div>
                         <div class="p-6">
                             <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
-                            <div class="flex items-center justify-between mt-2">
-                                <p class="text-xl font-bold text-indigo-600">{{ product.price }} €</p>
-                                <div class="flex items-center">
-                                    <span class="text-yellow-400">★</span>
-                                    <span class="ml-1 text-sm text-gray-500">{{ product.rating }}/5</span>
-                                </div>
+                            <div class="flex items-center gap-2 mt-2">
+                                <p class="text-xl font-bold text-indigo-600">{{ product.discount_price ?? product.price }} €</p>
+                                <p v-if="product.discount_price && product.discount_price > 0" class="text-sm text-gray-500 line-through">{{ product.price }} €</p>
                             </div>
-                            <button class="btn-primary w-full mt-4">
-                                Ajouter au panier
-                            </button>
+                            <Link :href="route('products.show', product.slug)" class="inline-flex justify-center gap-3 btn-primary w-full mt-4">
+                                <EyeIcon class="w-6 h-6 text-white" />
+                                Voir le produit
+                            </Link>
                         </div>
                     </div>
                 </div>

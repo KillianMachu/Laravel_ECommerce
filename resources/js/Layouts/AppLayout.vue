@@ -8,7 +8,7 @@ import DropdownLink from "@/Components/DropdownLink.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import { ShoppingCartIcon } from "@heroicons/vue/24/outline"
-
+import Notification from "@/Components/Notification.vue";
 defineProps({
     title: String,
 });
@@ -28,6 +28,8 @@ const logout = () => {
         <Head :title="title" />
 
         <Banner />
+
+        <Notification/>
 
         <div class="min-h-screen bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
@@ -53,8 +55,8 @@ const logout = () => {
                                     Accueil
                                 </NavLink>
                                 <NavLink
-                                    :href="route('categories')"
-                                    :active="route().current('categories')"
+                                    :href="route('categories.index')"
+                                    :active="route().current('categories.index')"
                                 >
                                     Catégories
                                 </NavLink>
@@ -162,6 +164,12 @@ const logout = () => {
                                                 Mes adresses
                                             </DropdownLink>
 
+                                            <DropdownLink
+                                                :href="route('orders.index')"
+                                            >
+                                                Mes commandes
+                                            </DropdownLink>
+
                                             <div
                                                 class="border-t border-gray-200"
                                             />
@@ -237,8 +245,8 @@ const logout = () => {
                             Accueil
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
-                            :href="route('categories')"
-                            :active="route().current('categories')"
+                            :href="route('categories.index')"
+                            :active="route().current('categories.index')"
                         >
                             Catégories
                         </ResponsiveNavLink>

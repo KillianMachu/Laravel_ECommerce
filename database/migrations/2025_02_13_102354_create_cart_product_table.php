@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('cart_product', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cart_id')->constrained();
-            $table->foreignId('product_id')->constrained();
-            $table->integer('quantity')->default(1);
-            // $table->integer('total_price')->comment('Unitary price');
+            $table->foreignId('cart_id')->constrained()->onDelete('cascade');
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->integer('quantity')->default(1)->comment('Quantity');
             $table->timestamps();
         });
     }

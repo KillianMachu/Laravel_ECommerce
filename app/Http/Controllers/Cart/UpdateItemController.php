@@ -16,7 +16,11 @@ class UpdateItemController extends Controller
         $request->validate([
             'quantity' => 'required|integer|min:1'
         ]);
-        
+
+        if ($request->quantity > $product->stock) {
+            return back()->with('error', 'Quantité insuffisante en stock');
+        }
+
         $cart = $request->user()->customer->cart()->first();
         $cartProduct = $cart->products()->where('product_id', $product->id)->first();
         $cartProduct->pivot->update([

@@ -19,11 +19,18 @@ class AddItemController extends Controller
             'quantity' => 'required|integer|min:1'
         ]);
 
+        if ($request->quantity > $product->stock) {
+            return back()->with('error', 'Quantité insuffisante en stock');
+        }
+
         $cart = $request->user()->customer->cart()->firstOrCreate();
 
         $cartProduct = $cart->products()->where('product_id', $product->id)->first();
 
         if ($cartProduct) {
+            if ($request->quantity + $cartProduct->pivot->quantity > $product->stock) {
+                return back()->with('error', 'Quantité insuffisante en stock');
+            }
             $cartProduct->pivot->update([
                 'quantity' => $cartProduct->pivot->quantity + $request->quantity
             ]);

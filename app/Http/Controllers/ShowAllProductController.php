@@ -14,7 +14,7 @@ class ShowAllProductController extends Controller
     public function __invoke(Request $request, Product $product)
     {
         return Inertia::render('Product/Index', [
-            'products' => Product::all(),
+            'products' => $product->where('is_active', true)->get(),
         ]);
     }
 }

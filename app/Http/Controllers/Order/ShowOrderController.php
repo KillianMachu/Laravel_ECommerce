@@ -14,12 +14,12 @@ class ShowOrderController extends Controller
      */
     public function __invoke(Request $request, Order $order)
     {
-        // $customer = $request->user()->customer;
+        $customer = $request->user()->customer;
 
 
-        // if (!$customer->orders->contains($order)) {
-        //     abort(404);
-        // }
+        if (!$customer->orders->contains($order)) {
+            abort(404);
+        }
 
         return Inertia::render('Order/Show', [
             'order' => $order->load('products', 'shippingAddress')

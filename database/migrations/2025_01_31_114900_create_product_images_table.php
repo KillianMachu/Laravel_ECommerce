@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('product_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade')->comment('Product ID');
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->string('image_url')->comment('Image URL');
             $table->boolean('is_primary')->default(false)->comment('Is primary image');
-            $table->integer('position')->default(0)->comment('Position de l\'image');
+            $table->integer('position')->default(0)->comment('Image position');
             $table->timestamps();
         });
     }

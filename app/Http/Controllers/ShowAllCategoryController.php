@@ -14,7 +14,7 @@ class ShowAllCategoryController extends Controller
     public function __invoke(Request $request, Category $category)
     {
         return Inertia::render('Category/Index', [
-            'categories' => Category::withCount('products')->get(),
+            'categories' => $category->withCount('products')->get(),
         ]);
     }
 }

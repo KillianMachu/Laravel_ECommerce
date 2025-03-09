@@ -37,7 +37,7 @@ const props = defineProps({
                 :key="category.id" 
                 class="card group cursor-pointer hover:shadow-xl transition-all duration-300">
                 <div class="aspect-w-16 aspect-h-9 w-full overflow-hidden rounded-t-lg">
-                <img :src="category.image" 
+                <img :src="'/storage/' + category.image_url" 
                     :alt="category.name" 
                     class="h-full w-full object-cover object-center transform group-hover:scale-110 transition-transform duration-300">
                 </div>

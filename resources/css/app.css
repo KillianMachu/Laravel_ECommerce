@@ -47,6 +47,26 @@
   .badge-info {
     @apply bg-blue-100 text-blue-800;
   }
+
+  .badge-error {
+    @apply bg-red-100 text-red-800;
+  }
+
+  .notification {
+    @apply fixed top-4 left-1/2 -translate-x-1/2 p-4 rounded-lg shadow-lg z-50 transform transition-all duration-300 flex items-center gap-2 min-w-[300px] justify-center;
+  }
+
+  .notification-success {
+    @apply bg-green-500 text-white;
+  }
+
+  .notification-error {
+    @apply bg-red-500 text-white;
+  }
+
+  .notification-info {
+    @apply bg-blue-500 text-white;
+  }
 }
 
 /* Animations */
@@ -57,4 +77,17 @@
 
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from { transform: translate(-50%, -100%); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.notification-enter-active {
+  animation: slideDown 0.3s ease-out;
+}
+
+.notification-leave-active {
+  animation: slideDown 0.3s ease-out reverse;
 }

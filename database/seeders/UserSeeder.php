@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Address;
+use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\User;
@@ -24,11 +25,11 @@ class UserSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // Créer 10 utilisateurs aléatoires avec le rôle customer
         User::factory(10)
         ->has(Customer::factory()
             ->has(Address::factory(2))
             ->has(Order::factory(rand(1, 3)))
+            ->has(Cart::factory())
         )
         ->create([
             'role' => 'customer',

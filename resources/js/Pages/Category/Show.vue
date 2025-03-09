@@ -2,6 +2,7 @@
 import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref } from 'vue';
+import { MagnifyingGlassIcon, FunnelIcon, EyeIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
     category: {
@@ -25,7 +26,7 @@ const searchQuery = ref('')
             <!-- En-tête de la catégorie -->
             <div class="relative rounded-2xl overflow-hidden mb-8">
                 <div class="absolute inset-0">
-                    <img :src="category.image" class="w-full h-full object-cover" :alt="category.name">
+                    <img :src="'/storage/' + category.image_url" class="w-full h-full object-cover" :alt="category.name">
                     <div class="absolute inset-0 bg-gradient-to-r from-indigo-600/90 to-indigo-600/70"></div>
                 </div>
                 <div class="relative py-16 px-8 sm:px-12">
@@ -63,15 +64,25 @@ const searchQuery = ref('')
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div v-for="product in category.products" :key="product.id"
                     class="card group cursor-pointer animate-fade-in">
-                    <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-t-lg bg-gray-200">
-                        <img :src="product.primary_image_url" :alt="product.name"
-                            class="h-full w-full object-cover object-center group-hover:scale-110 transition-transform duration-300">
+                    <div class="relative">
+                        <div v-if="product.discount_price"
+                        class="absolute top-4 left-4 bg-red-600 text-white px-3 py-1.5 rounded-md text-lg font-semibold z-10">
+                            - {{ product.discount_percentage }} %
+                        </div>
+                        <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-t-lg bg-gray-200">
+                            <img :src="'/storage/' + product.primary_image_url" :alt="product.name"
+                                class="h-full w-full object-cover object-center group-hover:scale-110 transition-transform duration-300">
+                        </div>
                     </div>
                     <div class="p-6">
                         <h3 class="text-lg font-semibold text-gray-900">{{ product.name }}</h3>
-                        <p class="text-xl font-bold text-indigo-600 mt-2">{{ product.price }} €</p>
-                        <Link :href="route('products.show', product.slug)" class="btn-primary w-full mt-4">
-                        Voir le produit
+                        <div class="flex items-center gap-2 mt-2">
+                                <p class="text-xl font-bold text-indigo-600">{{ product.discount_price ?? product.price }} €</p>
+                                <p v-if="product.discount_price && product.discount_price > 0" class="text-sm text-gray-500 line-through">{{ product.price }} €</p>
+                            </div>
+                        <Link :href="route('products.show', product.slug)" class="inline-flex justify-center gap-3 btn-primary w-full mt-4">
+                            <EyeIcon class="w-6 h-6 text-white" />
+                            Voir le produit
                         </Link>
                     </div>
                 </div>

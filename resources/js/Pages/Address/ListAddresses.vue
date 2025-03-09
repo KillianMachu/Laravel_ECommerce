@@ -237,7 +237,7 @@ watch(searchQuery, (newValue) => {
           <div class="space-y-2 text-gray-600">
             <p>{{ address.recipient }}</p>
             <p>{{ address.street }}</p>
-            <p>{{ address.postalCode }} {{ address.city }}</p>
+            <p>{{ address.postal_code }} {{ address.city }}</p>
             <p>{{ address.phone }}</p>
           </div>
         </div>

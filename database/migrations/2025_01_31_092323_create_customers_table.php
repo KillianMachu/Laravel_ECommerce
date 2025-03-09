@@ -15,9 +15,9 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('phone')->nullable();
-            $table->date('birth_date')->nullable();
-            $table->string('gender')->default(CustomerGender::OTHER->value);
+            $table->string('phone')->nullable()->comment('Phone');
+            $table->date('birth_date')->nullable()->comment('Birth date');
+            $table->string('gender')->default(CustomerGender::OTHER->value)->comment('Gender');
             $table->timestamps();
         });
     }

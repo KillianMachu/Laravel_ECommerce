@@ -20,11 +20,13 @@ class CustomerResource extends Resource
 {
     protected static ?string $model = User::class;
 
+    protected static ?string $navigationGroup = 'Utilisateurs';
+
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationLabel = 'Clients';
  
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 3;
 
     public static function getEloquentQuery(): Builder
     {
@@ -74,18 +76,28 @@ class CustomerResource extends Resource
                         Forms\Components\Repeater::make('Adresses')
                             ->relationship('addresses')
                             ->schema([
-                                Forms\Components\TextInput::make('street')
-                                    ->required()
-                                    ->maxLength(191),
-                                Forms\Components\TextInput::make('postal_code')
-                                    ->required()
-                                    ->maxLength(191),
-                                Forms\Components\TextInput::make('city')
-                                    ->required()
-                                    ->maxLength(191),
-                                Forms\Components\Toggle::make('is_default')
-                                    ->label('Adresse par défaut')
-                                    ->default(false),
+                                Forms\Components\TextInput::make('name')
+                                ->required()
+                                ->maxLength(191),
+                            Forms\Components\TextInput::make('recipient')
+                                ->required()
+                                ->maxLength(191),
+                            Forms\Components\TextInput::make('street')
+                                ->required()
+                                ->maxLength(191),
+                            Forms\Components\TextInput::make('postal_code')
+                                ->required()
+                                ->maxLength(191),
+                            Forms\Components\TextInput::make('city')
+                                ->required()
+                                ->maxLength(191),
+                            Forms\Components\TextInput::make('phone')
+                                ->tel()
+                                ->required()
+                                ->maxLength(191),
+                            Forms\Components\Toggle::make('is_default')
+                                ->default(false)
+                                ->required(),
                         ])
                         ->columnSpanFull()
                         ->columns(3),

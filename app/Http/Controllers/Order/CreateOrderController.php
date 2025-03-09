@@ -13,16 +13,16 @@ class CreateOrderController extends Controller
      */
     public function __invoke(Request $request)
     {
+        $request->validate([
+            'address_id' => 'required|exists:addresses,id',
+        ]);
+
         $customer = $request->user()->customer;
-        $cart = $customer->cart()->latest()->first();
+        $cart = $customer->cart()->first();
 
         if (!$cart || $cart->products->isEmpty()) {
             return back()->with('error', 'Votre panier est vide');
         }
-
-        $request->validate([
-            'address_id' => 'required|exists:addresses,id',
-        ]);
 
         foreach ($cart->products as $product) {
             if ($product->stock < $product->pivot->quantity) {
@@ -53,7 +53,7 @@ class CreateOrderController extends Controller
         foreach ($cart->products as $product) {
             $order->products()->attach($product->id, [
                 'quantity' => $product->pivot->quantity,
-                'total_price' => $product->price,
+                'unitary_price' => $product->discount_price ?? $product->price,
             ]);
 
             $product->decrement('stock', $product->pivot->quantity);

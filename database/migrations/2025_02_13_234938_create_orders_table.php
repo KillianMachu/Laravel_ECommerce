@@ -14,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained();
-            $table->integer('total_price');
-            $table->string('status')->default(OrderStatus::PENDING->value);
-            $table->foreignId('shipping_address_id')->constrained();
+            $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+            $table->integer('total_price')->comment('Total price in cents');
+            $table->string('status')->default(OrderStatus::PENDING->value)->comment('Order status');
+            $table->foreignId('shipping_address_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

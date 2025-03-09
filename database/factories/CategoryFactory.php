@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
@@ -17,12 +18,23 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->word();
+        $name = $this->faker->unique()->word();
 
         return [
             'name' => $name,
             'description' => $this->faker->paragraph(),
+            'image_url' => $this->fakeImage(),
             'slug' => Str::slug($name),
         ];
+    }
+
+    public function fakeImage(): string
+    {
+        $image = 'https://picsum.photos/640/480?random=' . rand(1,100);
+        $filename = 'products/' . uniqid() . '.jpg';
+        $imageContent = file_get_contents($image);
+        Storage::disk('public')->put($filename, $imageContent);
+
+        return $filename;
     }
 }

@@ -32,22 +32,22 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 
 Route::get('/', HomeController::class)->name('home');
 
 Route::get('/products/{product}', ShowProductController::class)->name('products.show');
-Route::get('/products', ShowAllProductController::class)->name('products');
+Route::get('/products', ShowAllProductController::class)->name('products.index');
 
 Route::get('/categories/{category}', ShowCategoryController::class)->name('categories.show');
-Route::get('/categories', ShowAllCategoryController::class)->name('categories');
+Route::get('/categories', ShowAllCategoryController::class)->name('categories.index');
 
 Route::middleware([
     'auth:sanctum',

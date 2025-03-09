@@ -1,18 +1,30 @@
 <script setup>
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import Notification from '@/Components/Notification.vue';
 import { ref, computed } from 'vue';
 import { router } from '@inertiajs/vue3';
+import { ShieldCheckIcon, TruckIcon } from '@heroicons/vue/24/outline';
 
 const page = usePage();
 const isAuthenticated = computed(() => page.props.auth.user !== null);
 
 const props = defineProps({
-  product: Object
+  product: {
+    type: Object,
+    required: true
+  }
 });
 
 const selectedImage = ref(0)
 const quantity = ref(1)
+
+if (props.product.images && props.product.images.length > 0) {
+  const defaultImageIndex = props.product.images.findIndex(img => img.is_primary);
+  if (defaultImageIndex !== -1) {
+    selectedImage.value = defaultImageIndex;
+  }
+}
 
 const addToCart = () => {
   if (!isAuthenticated.value) {
@@ -33,13 +45,16 @@ const addToCart = () => {
 
 <template>
   <AppLayout>
-
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <!-- Images -->
         <div class="space-y-4">
-          <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg">
-            <img :src="product.images[selectedImage].image_url" :alt="product.name"
+          <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg relative">
+            <div v-if="product.discount_price" 
+               class="absolute top-4 left-4 bg-red-600 text-white px-3 py-1.5 rounded-md text-lg font-semibold z-10">
+               - {{ product.discount_percentage }} %
+              </div>
+            <img :src="'/storage/' + product.images[selectedImage].image_url" :alt="product.name"
               class="h-full w-full object-cover object-center">
           </div>
           <div class="grid grid-cols-3 gap-4">
@@ -47,7 +62,7 @@ const addToCart = () => {
               'aspect-w-1 aspect-h-1 overflow-hidden rounded-lg',
               selectedImage === index ? 'ring-2 ring-indigo-600' : ''
             ]">
-              <img :src="image.image_url" :alt="`${product.name} ${index + 1}`"
+              <img :src="'/storage/' + image.image_url" :alt="`${product.name} ${index + 1}`"
                 class="h-full w-full object-cover object-center hover:opacity-75">
             </button>
           </div>
@@ -58,7 +73,10 @@ const addToCart = () => {
           <div>
             <h1 class="text-3xl font-bold text-gray-900">{{ product.name }}</h1>
             <div class="mt-4 flex items-center gap-4 justify-between">
-              <p class="text-3xl font-bold text-indigo-600">{{ product.price }} €</p>
+              <div class="flex items-center gap-2">
+                <p class="text-3xl font-bold text-indigo-600">{{ product.discount_price ?? product.price }} €</p>
+                <p v-if="product.discount_price && product.discount_price > 0" class="text-lg text-gray-500 line-through">{{ product.price }} €</p>
+              </div>
               <div>
                 <span v-if="product.stock > 0"
                   class="inline-flex items-center justify-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-emerald-700">

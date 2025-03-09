@@ -19,7 +19,11 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Produits / Catégories';
+
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+
+    protected static ?int $navigationSort = 8;
 
     public static function form(Form $form): Form
     {
@@ -50,18 +54,14 @@ class ProductResource extends Resource
                 Forms\Components\Repeater::make('Images')
                     ->relationship('images')
                     ->schema([
-                        Forms\Components\FileUpload::make('image_url') // Doit correspondre à la colonne dans product_images
+                        Forms\Components\FileUpload::make('image_url')
                             ->image()
                             ->imageEditor()
                             ->directory('products')
                             ->required(),
                         Forms\Components\Toggle::make('is_primary')
                             ->label('Image par défaut')
-                            ->default(false)
-                            ->reactive()
-                            ->afterStateUpdated(fn ($state, callable $set, callable $get, $record) => 
-                                self::setDefaultImage($state, $record)
-                            ),
+                            ->default(false),
                     ])
                     ->orderColumn('position')
                     ->defaultItems(0)
@@ -125,21 +125,5 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
-    }
-
-    public static function setDefaultImage($state, $record)
-    {
-        if ($state && $record) {
-            // Récupérer le produit depuis l’image
-            $product = $record->product ?? $record->getModel()->product;
-    
-            if ($product) {
-                // Désélectionner toutes les autres images
-                $product->images()->update(['is_primary' => false]);
-    
-                // Mettre l’image actuelle comme par défaut
-                $record->update(['is_primary' => true]);
-            }
-        }
     }
 }
